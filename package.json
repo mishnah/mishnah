@@ -1,0 +1,16 @@
+{
+  "name": "mishnah",
+  "version": "1.1.1",
+  "description": "Mishnah Study Library",
+  "main": "index.js",
+  "author": "David Bankier",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.10.6",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "csv-parse": "^1.0.0",
+    "hebcal": "^2.2.0"
+  }
+}

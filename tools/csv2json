@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+var path = require("path");
+var fs = require("fs");
+
+var parse = require("csv-parse");
+
+parse(fs.readFileSync(path.join(__dirname, "..","data","mishnah.csv")),function(err,output) {
+  var mesechtot = output[0];
+  var ret = {};
+  mesechtot.forEach(function(m, idx) {
+    ret[m] = [];
+    for(var i = 1; i < output.length; i++) {
+      var cell = output[i][idx];
+      if ( cell !== '') {
+        ret[m].push(cell);
+      }
+    }
+  });
+  fs.writeFileSync(path.join(__dirname, "..","data","mishnah.json"), JSON.stringify(ret));
+});

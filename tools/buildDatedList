@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+var path = require("path");
+var fs = require("fs");
+var mishnah = require("../index");
+
+var output = "";
+mishnah.buildCalendar({per_day:9, cycles:2, perakim: false, sun2thurs: false }).map(function(d) {
+  output += d.english + "," + d.hebrew + "," + d.pretty + "\r\n";
+});
+
+console.log(output);
+//fs.writeFileSync(path.join(__dirname, "..","data","dated_list.csv"), output);

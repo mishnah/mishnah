@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+var path = require("path");
+var fs = require("fs");
+
+var mishnah = require("../index");
+var moment = require("moment");
+
+var day = new moment([2015, 8, 13]);
+var output = "";
+for(var i = 0; i < 420; i++) {
+  output += mishnah.prettyFormat(mishnah.getToday(day), true);
+  output += i%7 === 6 ? "\n" : ",";
+  day.add(1,"d");
+}
+
+fs.writeFileSync(path.join(__dirname, "..","data","calendar.csv"), output);
