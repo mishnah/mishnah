@@ -1,6 +1,6 @@
 {
   "name": "mishnah",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Mishnah Study Library",
   "main": "index.js",
   "author": "David Bankier",
@@ -8,6 +8,10 @@
   "dependencies": {
     "moment": "^2.10.6",
     "underscore": "^1.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mishnah/mishnah.git"
   },
   "devDependencies": {
     "csv-parse": "^1.0.0",

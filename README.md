@@ -1,7 +1,7 @@
 # Mishnah Study Library
 
 This node package is used to generate Mishnah learning calendars. It was primarily
-build for [Mishnah Yomit](http://www.mishnahyomit.com) but can be used to build 
+built for [Mishnah Yomit](http://www.mishnahyomit.com) but can be used to build 
 calendars for other learning structures.
 
 
@@ -95,3 +95,6 @@ The function returns the following array:
 
 Returns a pretty format of a Mishnah range (as already described above).
 
+### Credits
+
+The original sheet with the breakdown of mishnayot per perek was taken from [here](https://docs.google.com/spreadsheets/d/11ITaH8qPFPIo1xvX13X0m7iCUfSgtLMIxP8A-Y39SuE/edit).
