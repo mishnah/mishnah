@@ -1,7 +1,7 @@
 # Mishnah Study Library
 
 This node package is used to generate Mishnah learning calendars. It was primarily
-built for [Mishnah Yomit](http://www.mishnahyomit.com) but can be used to build 
+built for [Mishnah Yomit](http://www.mishnahyomit.com) but can be used to build
 calendars for other learning structures.
 
 
@@ -16,7 +16,7 @@ $ npm install mishnah -S
 ```
 var mishnah = require("mishnah");
 
-//The total number of Mishanayot. 
+//The total number of Mishanayot.
 mishnah.total;
 
 //An array of the names of all the tractates.
@@ -28,7 +28,7 @@ mishnah.structure;
 
 ```
 
-## Functions 
+## Functions
 
 ### mishnah.getToday(date,pretty)
 
@@ -65,9 +65,9 @@ The argument is an optional object:
   {
      start: new Date(),  // starting date (defaults to  10 July 2010)
      per_day: 2,         // mishnayot to be learnt per day (default: 2)
-     cycles:  1,         // cycles to generate (default: 1) 
-     perakim:  false,    // build a perakim based learning schedule (default: false) 
-     sun2thurs:  false,  // build a schedule for Sunday to Thursday only (default: false) 
+     cycles:  1,         // cycles to generate (default: 1)
+     perakim:  false,    // build a perakim based learning schedule (default: false)
+     sun2thurs:  false,  // build a schedule for Sunday to Thursday only (default: false)
   }
 ```
 
@@ -83,7 +83,7 @@ The function returns the following array:
       t: 0, // tractate index (use the mishnah.names property)
       p: 1, // perek number
       m: 2, // mishnah number
-   }],  
+   }],
    date: Date, // date object
    english: "Monday, September 7th 2015" // nicely formated english date
    hebrew: "23 Elul 5775", // nicely formatted hebrew date
@@ -94,6 +94,22 @@ The function returns the following array:
 ### mishnah.prettyFormat(d)
 
 Returns a pretty format of a Mishnah range (as already described above).
+
+### mishnah.source(mishnah, callback)
+
+Returns the mishnah source/text in html format from wikisource.
+
+The mishnah object expects the following format:
+
+```
+{
+  t: 0, // tractate index (use the mishnah.names property)
+  p: 1, // perek number
+  m: 1, // mishnah number
+}
+```
+
+If a callback is not provided, a promise will be returned.
 
 ### Credits
 

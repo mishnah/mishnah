@@ -1,12 +1,14 @@
 {
   "name": "mishnah",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Mishnah Study Library",
   "main": "index.js",
   "author": "David Bankier",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^0.20.0",
     "moment": "^2.10.6",
+    "request": "^2.72.0",
     "underscore": "^1.8.3"
   },
   "repository": {
