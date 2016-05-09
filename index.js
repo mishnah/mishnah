@@ -128,6 +128,9 @@ exports.source = function (o, callback) {
     request(url, function (err, reponse, body) {
       if (err) { return cb(err) }
       var json = JSON.parse(body);
+      if (!json || !json.parse || !json.parse.text) {
+        return cb("Not Found");
+      }
       var content = json.parse.text['*'];
       var $ = cheerio.load(content);
 
