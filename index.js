@@ -140,7 +140,7 @@ exports.source = function (o, callback) {
 
       var complete = `
       <div style="direction: rtl;">${mishnah_div.html()}</div>
-      <small>Source <a href="https://he.wikisource.org/wiki/${encoded_page}">Wikisource</small>
+      <small>Source <a href="https://he.wikisource.org/wiki/${encoded_page}">Wikisource</a></small>
       `
       cb(null, complete);
     })
