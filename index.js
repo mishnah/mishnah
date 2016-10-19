@@ -8,18 +8,13 @@ var request = require("request");
 
 // loading the data
 var json = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "mishnah.json")));
-var total_m = 0;
-var total_p = 0;
+var flatArray = _.chain(json).values().flatten().value();
+var total_p = flatArray.length;
+var total_m = _.reduce(flatArray, function(memo, num){ return memo + parseInt(num, 10); }, 0);
+
 //extract names
 var names = _.keys(json);
 var hebrew = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "hebrew.json")));
-//count total mishnayot
-_.values(json).forEach(function (arr) {
-  total_p += arr.length;
-  arr.forEach(function (value) {
-    total_m += parseInt(value, 10);
-  });
-});
 
 //build daily data
 var mas_index = 0;
