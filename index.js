@@ -8,18 +8,13 @@ var request = require("request");
 
 // loading the data
 var json = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "mishnah.json")));
-var total_m = 0;
-var total_p = 0;
+var flatArray = _.chain(json).values().flatten().value();
+var total_p = flatArray.length;
+var total_m = _.reduce(flatArray, function(memo, num){ return memo + parseInt(num, 10); }, 0);
+
 //extract names
 var names = _.keys(json);
 var hebrew = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "hebrew.json")));
-//count total mishnayot
-_.values(json).forEach(function (arr) {
-  total_p += arr.length;
-  arr.forEach(function (value) {
-    total_m += parseInt(value, 10);
-  });
-});
 
 //build daily data
 var mas_index = 0;
@@ -122,6 +117,8 @@ exports.source = function (o, callback) {
   var masechet = hebrew.names[o.t];
   var perek = hebrew.values[o.p];
   var mishnah = hebrew.values[o.m];
+  var menukad = o.menukad;
+
   var encoded_page = encodeURI('משנה_' + masechet + "_" + perek + "_" + mishnah);
   var url = 'https://he.wikisource.org/w/api.php?action=parse&format=json&section=0&prop=text&page=' + encoded_page;
   function getMishnah(cb) {
@@ -137,6 +134,10 @@ exports.source = function (o, callback) {
       var mishnah_div = $("div").filter(function () {
         return $(this).css("font-size") == "120%"
       });;
+
+      if(menukad){
+        mishnah_div = mishnah_div.last();
+      }
 
       var complete = `
       <div style="direction: rtl;">${mishnah_div.html()}</div>
