@@ -67,7 +67,8 @@ The argument is an optional object:
      per_day: 2,         // mishnayot to be learnt per day (default: 2)
      cycles:  1,         // cycles to generate (default: 1)
      perakim:  false,    // build a perakim based learning schedule (default: false)
-     sun2thurs:  false,  // build a schedule for Sunday to Thursday only (default: false)
+     sun2thurs:  false,  // build a schedule for Sunday to Thursday only (default: false),
+     seder: "nashim"     // build a schedule for a specific seder only (default: undefined)
   }
 ```
 

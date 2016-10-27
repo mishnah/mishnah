@@ -16,6 +16,11 @@ var total_m = _.reduce(flatArray, function(memo, num){ return memo + parseInt(nu
 var names = _.keys(json);
 var hebrew = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "hebrew.json")));
 
+// Sedarim
+var seder = {};
+seder.nashim = ["Yevamot", "Ketubot", "Nedarim", "Nazir", "Sotah", "Gittin", "Kidushin"];
+//TODO other sedarim...
+
 //build daily data
 var mas_index = 0;
 var perek_index = 0;
@@ -85,6 +90,24 @@ exports.getToday = function (_date, pretty) {
   return pretty ? prettyFormat(mish) : mish;
 };
 
+var constrainListToSeder = function(list, thisSeder){
+  if(!seder[thisSeder]){
+    return list;
+  }
+
+  var allowedMasechtos = _.map(seder[thisSeder], function(masechtaName){ return _.indexOf(names, masechtaName) });
+
+  var partOfSeder = function(dailyQuota) { return _.contains(allowedMasechtos,  dailyQuota.t); }
+  list = _.chain(list)
+    .filter(function(dailyQuota){
+      return _.some(dailyQuota, partOfSeder);
+    }).map(function(dailyQuota){
+      return _.filter(dailyQuota, partOfSeder);
+    }).value();
+
+  return list;
+}
+
 exports.buildCalendar = function (o) {
   mas_index = 0;
   perek_index = 0;
@@ -92,6 +115,11 @@ exports.buildCalendar = function (o) {
 
   var day = new moment(o.start || moment([2010, 6, 4]));
   var list = buildList(o.per_day || 2, o.perakim);
+
+  if(o.seder){
+    list = constrainListToSeder(list, o.seder);
+  }
+
   var data = [];
   function addDay(d) {
     var ret = {
