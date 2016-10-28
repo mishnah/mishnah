@@ -1,0 +1,6 @@
+{
+    "zeraim": ["Berachot", "Peah", "Damai", "Kilayim", "Sheviit", "Terumot", "Maaserot", "Maaser Sheni", "Chalah", "Orlah", "Bikurim"],
+    "moed":   ["Shabbat", "Eruvin", "Pesachim", "Shekalim", "Yoma", "Sukkah", "Beitzah", "Rosh Hashanah", "Taanit", "Megilah", "Moed Katan", "Chagigah"],
+    "nashim": ["Yevamot", "Ketubot", "Nedarim", "Nazir", "Sotah", "Gittin", "Kidushin"],
+    "nezikin": ["Bava Kama", "Bava Metzia", "Bava Batra", "Sanhedrin", "Makkot", "Shevuot", "Eduyot", "Avodah Zara", "Avot", "Horayot"]
+}
