@@ -16,6 +16,9 @@ var total_m = _.reduce(flatArray, function(memo, num){ return memo + parseInt(nu
 var names = _.keys(json);
 var hebrew = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "hebrew.json")));
 
+// Sedarim
+var seder = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "sedarim.json")));
+
 //build daily data
 var mas_index = 0;
 var perek_index = 0;
@@ -42,9 +45,26 @@ function increment(perakim) {
     }
   }
 }
-function buildList(perDay, perakim) {
+function buildList(perDay, perakim, sederName) {
   var ret = [];
+
+  var allowedMasechtos = [];
+  if(sederName && seder[sederName]){
+    allowedMasechtos = _.map(seder[sederName], function(masechtaName){ return _.indexOf(names, masechtaName) });
+  }
+
   for (var i = 0; i < (perakim ? total_p : total_m) / perDay; i++) {
+
+    // Limit the schedule to a particular seder only if requested
+    if(sederName && allowedMasechtos.length > 0){
+      while(allowedMasechtos.indexOf(mas_index) === -1 && mas_index < names.length){
+        mas_index++;
+      }
+      if(allowedMasechtos.indexOf(mas_index) === -1){
+        break;
+      }
+    }
+
     var day = [];
     day.push({ t: mas_index, p: (perek_index + 1), m: (mish_index + 1) });
     if (perDay > 1) {
@@ -91,7 +111,9 @@ exports.buildCalendar = function (o) {
   mish_index = 0;
 
   var day = new moment(o.start || moment([2010, 6, 4]));
-  var list = buildList(o.per_day || 2, o.perakim);
+
+  var list = buildList(o.per_day || 2, o.perakim, o.seder);
+
   var data = [];
   function addDay(d) {
     var ret = {
