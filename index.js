@@ -184,10 +184,10 @@ exports.source = function(o, callback) {
         return cb(err);
       }
       var json = JSON.parse(body);
-      if (!json || !json.he || !json.he[o.m]) {
+      if (!json || !json.he || !json.he[o.m - 1]) {
         return cb('Not Found');
       }
-      var content = json.he[o.m];
+      var content = json.he[o.m - 1];
       var complete = `
       <div style="direction: rtl;">${content}</div>
       <small>Source <a href="https://www.sefaria.org">Sefaria</a></small>
