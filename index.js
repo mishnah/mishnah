@@ -1,23 +1,38 @@
-var path = require("path");
-var fs = require("fs");
-var _ = require("underscore");
-var moment = require("moment");
-var eng2heb = require("./lib/eng2heb");
-var cheerio = require("cheerio");
-var request = require("request");
+var path = require('path');
+var fs = require('fs');
+var _ = require('underscore');
+var moment = require('moment');
+var eng2heb = require('./lib/eng2heb');
+var cheerio = require('cheerio');
+var request = require('request');
 
 // loading the data
-var json = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "mishnah.json")));
-var flatArray = _.chain(json).values().flatten().value();
+var json = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'data', 'mishnah.json'))
+);
+var flatArray = _.chain(json)
+  .values()
+  .flatten()
+  .value();
 var total_p = flatArray.length;
-var total_m = _.reduce(flatArray, function(memo, num){ return memo + parseInt(num, 10); }, 0);
+var total_m = _.reduce(
+  flatArray,
+  function(memo, num) {
+    return memo + parseInt(num, 10);
+  },
+  0
+);
 
 //extract names
 var names = _.keys(json);
-var hebrew = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "hebrew.json")));
+var hebrew = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'data', 'hebrew.json'))
+);
 
 // Sedarim
-var seder = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "sedarim.json")));
+var seder = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'data', 'sedarim.json'))
+);
 
 //build daily data
 var mas_index = 0;
@@ -49,29 +64,33 @@ function buildList(perDay, perakim, sederName) {
   var ret = [];
 
   var allowedMasechtos = [];
-  if(sederName && seder[sederName]){
-    allowedMasechtos = _.map(seder[sederName], function(masechtaName){ return _.indexOf(names, masechtaName) });
+  if (sederName && seder[sederName]) {
+    allowedMasechtos = _.map(seder[sederName], function(masechtaName) {
+      return _.indexOf(names, masechtaName);
+    });
   }
 
   for (var i = 0; i < (perakim ? total_p : total_m) / perDay; i++) {
-
     // Limit the schedule to a particular seder only if requested
-    if(sederName && allowedMasechtos.length > 0){
-      while(allowedMasechtos.indexOf(mas_index) === -1 && mas_index < names.length){
+    if (sederName && allowedMasechtos.length > 0) {
+      while (
+        allowedMasechtos.indexOf(mas_index) === -1 &&
+        mas_index < names.length
+      ) {
         mas_index++;
       }
-      if(allowedMasechtos.indexOf(mas_index) === -1){
+      if (allowedMasechtos.indexOf(mas_index) === -1) {
         break;
       }
     }
 
     var day = [];
-    day.push({ t: mas_index, p: (perek_index + 1), m: (mish_index + 1) });
+    day.push({ t: mas_index, p: perek_index + 1, m: mish_index + 1 });
     if (perDay > 1) {
       for (var j = 1; j < perDay; j++) {
         increment(perakim);
       }
-      day.push({ t: mas_index, p: (perek_index + 1), m: (mish_index + 1) });
+      day.push({ t: mas_index, p: perek_index + 1, m: mish_index + 1 });
     }
     increment(perakim);
     ret.push(day);
@@ -80,16 +99,26 @@ function buildList(perDay, perakim, sederName) {
 }
 
 function prettyLine(d, display_only_first, show_perek, only_perakim) {
-  return ((d.p === 1 && d.m === 1) || !display_only_first ? names[d.t] + " " : "") +
-    (d.m === 1 || show_perek ? d.p + (!only_perakim ? ":" : "") : "") +
-    (!only_perakim ? d.m : "");
+  return (
+    ((d.p === 1 && d.m === 1) || !display_only_first ? names[d.t] + ' ' : '') +
+    (d.m === 1 || show_perek ? d.p + (!only_perakim ? ':' : '') : '') +
+    (!only_perakim ? d.m : '')
+  );
 }
 
 function prettyFormat(d, display_only_first, only_perakim) {
-  return prettyLine(d[0], display_only_first, true, only_perakim) +
-    (d[1] !== undefined ?
-      (d[1].t !== d[0].t ? " - " : "-") +
-      prettyLine(d[1], d[1].t === d[0].t, d[1].t !== d[0].t || d[1].p !== d[0].p, only_perakim) : "");
+  return (
+    prettyLine(d[0], display_only_first, true, only_perakim) +
+    (d[1] !== undefined
+      ? (d[1].t !== d[0].t ? ' - ' : '-') +
+        prettyLine(
+          d[1],
+          d[1].t === d[0].t,
+          d[1].t !== d[0].t || d[1].p !== d[0].p,
+          only_perakim
+        )
+      : '')
+  );
 }
 
 exports.structure = json;
@@ -98,14 +127,14 @@ exports.total = total_m;
 exports.prettyFormat = prettyFormat;
 
 var mishnah_yomit = buildList(2);
-exports.getToday = function (_date, pretty) {
+exports.getToday = function(_date, pretty) {
   var start = moment([2010, 6, 4]);
   var date = moment(_date);
   var mish = mishnah_yomit[+date.diff(start, 'days') % mishnah_yomit.length];
   return pretty ? prettyFormat(mish) : mish;
 };
 
-exports.buildCalendar = function (o) {
+exports.buildCalendar = function(o) {
   mas_index = 0;
   perek_index = 0;
   mish_index = 0;
@@ -120,12 +149,16 @@ exports.buildCalendar = function (o) {
       d: d,
       pretty: prettyFormat(d, false, o.perakim),
       date: new Date(day.toDate()),
-      english: day.format("dddd, MMMM Do YYYY"),
-      hebrew: eng2heb.convert(day.toDate()),
+      english: day.format('dddd, MMMM Do YYYY'),
+      hebrew: eng2heb.convert(day.toDate())
     };
     day.add(1, 'd');
-    if (o.sun2thurs && day.day() === 5) { day.add(1, 'd'); }
-    if (o.sun2thurs && day.day() === 6) { day.add(1, 'd'); }
+    if (o.sun2thurs && day.day() === 5) {
+      day.add(1, 'd');
+    }
+    if (o.sun2thurs && day.day() === 6) {
+      day.add(1, 'd');
+    }
 
     data.push(ret);
   }
@@ -135,50 +168,42 @@ exports.buildCalendar = function (o) {
   return data;
 };
 
-exports.source = function (o, callback) {
+exports.source = function(o, callback) {
   var masechet = hebrew.names[o.t];
   var perek = hebrew.values[o.p];
   var mishnah = hebrew.values[o.m];
   var menukad = o.menukad;
 
-  var encoded_page = encodeURI('משנה_' + masechet + "_" + perek + "_" + mishnah);
-  var url = 'https://he.wikisource.org/w/api.php?action=parse&format=json&section=0&prop=text&page=' + encoded_page;
+  var encoded_page = encodeURI(
+    'משנה_' + masechet + '_' + perek + '_' + mishnah
+  );
+  var url = 'https://www.sefaria.org/api/texts/' + encoded_page;
   function getMishnah(cb) {
-    request(url, function (err, reponse, body) {
-      if (err) { return cb(err) }
+    request(url, function(err, reponse, body) {
+      if (err) {
+        return cb(err);
+      }
       var json = JSON.parse(body);
-      if (!json || !json.parse || !json.parse.text) {
-        return cb("Not Found");
+      if (!json || !json.he || !json.he[o.m]) {
+        return cb('Not Found');
       }
-      var content = json.parse.text['*'];
-      var $ = cheerio.load(content);
-
-      var mishnah_div = $("div").filter(function () {
-        return $(this).css("font-size") == "120%"
-      });;
-
-      if(menukad){
-        mishnah_div = mishnah_div.last();
-      }
-
+      var content = json.he[o.m];
       var complete = `
-      <div style="direction: rtl;">${mishnah_div.html()}</div>
-      <small>Source <a href="https://he.wikisource.org/wiki/${encoded_page}">Wikisource</a></small>
-      `
+      <div style="direction: rtl;">${content}</div>
+      <small>Source <a href="https://www.sefaria.org">Sefaria</a></small>
+      `;
       cb(null, complete);
-    })
+    });
   }
   if (callback) {
     return getMishnah(callback);
   }
   return new Promise((resolve, reject) => {
     getMishnah((err, content) => {
-      if (err) { return reject(err)}
+      if (err) {
+        return reject(err);
+      }
       resolve(content);
-    })
+    });
   });
-
-}
-
-
-
+};
