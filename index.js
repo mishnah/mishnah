@@ -190,7 +190,9 @@ exports.source = function(o, callback) {
       var content = json.he[o.m - 1];
       var complete = `
       <div style="direction: rtl;">${content}</div>
-      <small>Source <a href="https://www.sefaria.org">Sefaria</a></small>
+      <small><a href="https://www.mishnahyomit.com/learn/?t=${o.t}&p=${o.p}&m=${
+        o.m
+      }">Full Text and Commentary</a></small>
       `;
       cb(null, complete);
     });
