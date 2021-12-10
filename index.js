@@ -10,14 +10,11 @@ var request = require('request');
 var json = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'data', 'mishnah.json'))
 );
-var flatArray = _.chain(json)
-  .values()
-  .flatten()
-  .value();
+var flatArray = _.chain(json).values().flatten().value();
 var total_p = flatArray.length;
 var total_m = _.reduce(
   flatArray,
-  function(memo, num) {
+  function (memo, num) {
     return memo + parseInt(num, 10);
   },
   0
@@ -65,7 +62,7 @@ function buildList(perDay, perakim, sederName) {
 
   var allowedMasechtos = [];
   if (sederName && seder[sederName]) {
-    allowedMasechtos = _.map(seder[sederName], function(masechtaName) {
+    allowedMasechtos = _.map(seder[sederName], function (masechtaName) {
       return _.indexOf(names, masechtaName);
     });
   }
@@ -127,14 +124,14 @@ exports.total = total_m;
 exports.prettyFormat = prettyFormat;
 
 var mishnah_yomit = buildList(2);
-exports.getToday = function(_date, pretty) {
+exports.getToday = function (_date, pretty) {
   var start = moment([2010, 6, 4]);
   var date = moment(_date);
   var mish = mishnah_yomit[+date.diff(start, 'days') % mishnah_yomit.length];
   return pretty ? prettyFormat(mish) : mish;
 };
 
-exports.buildCalendar = function(o) {
+exports.buildCalendar = function (o) {
   mas_index = 0;
   perek_index = 0;
   mish_index = 0;
@@ -156,7 +153,7 @@ exports.buildCalendar = function(o) {
     if (o.sun2thurs && day.day() === 5) {
       day.add(1, 'd');
     }
-    if (o.sun2thurs && day.day() === 6) {
+    if ((o.sun2fri || o.sun2thurs) && day.day() === 6) {
       day.add(1, 'd');
     }
 
@@ -168,7 +165,7 @@ exports.buildCalendar = function(o) {
   return data;
 };
 
-exports.source = function(o, callback) {
+exports.source = function (o, callback) {
   var masechet = hebrew.names[o.t];
   var perek = hebrew.values[o.p];
   var mishnah = hebrew.values[o.m];
@@ -179,7 +176,7 @@ exports.source = function(o, callback) {
   );
   var url = 'https://www.sefaria.org/api/texts/' + encoded_page;
   function getMishnah(cb) {
-    request(url, function(err, reponse, body) {
+    request(url, function (err, reponse, body) {
       if (err) {
         return cb(err);
       }
@@ -190,9 +187,7 @@ exports.source = function(o, callback) {
       var content = json.he[o.m - 1];
       var complete = `
       <div style="direction: rtl;">${content}</div>
-      <small><a href="https://www.mishnahyomit.com/learn/?t=${o.t}&p=${o.p}&m=${
-        o.m
-      }">Full Text and Commentary</a></small>
+      <small><a href="https://www.mishnahyomit.com/learn/?t=${o.t}&p=${o.p}&m=${o.m}">Full Text and Commentary</a></small>
       `;
       cb(null, complete);
     });
