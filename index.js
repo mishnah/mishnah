@@ -157,6 +157,17 @@ exports.buildCalendar = function (o) {
   return data;
 };
 
+exports.isValid = function (d) {
+  return (
+    d.t >= 0 &&
+    d.t < names.length &&
+    d.p >= 1 &&
+    d.p <= json[names[d.t]].length &&
+    d.m >= 1 &&
+    d.m <= json[names[d.t]][d.p]
+  );
+};
+
 exports.buildTargetCalendar = function (start_date, end_date, current_d) {
   var start = moment(start_date).startOf('day');
   var end = moment(end_date).startOf('day');
