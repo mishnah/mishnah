@@ -83,7 +83,7 @@ function buildList(perDay, perakim, sederName) {
       for (var j = 1; j < perDay; j++) {
         index = increment(index, perakim);
       }
-      day.push({ t: index.m, p: index.p + 1, m: index.m + 1 });
+      day.push({ t: index.t, p: index.p + 1, m: index.m + 1 });
     }
     index = increment(index, perakim);
     ret.push(day);
