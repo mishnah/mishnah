@@ -6,7 +6,7 @@ var mishnah = require('../index');
 var moment = require('moment');
 var H = require('hebcal');
 
-var day = new moment([2019, 8, 29]);
+var day = new moment([2022, 8, 25]);
 var output = '';
 for (var i = 0; i < 420; i++) {
   output += mishnah.prettyFormat(mishnah.getToday(day), true);
