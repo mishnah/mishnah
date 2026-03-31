@@ -2,7 +2,7 @@
 var path = require("path");
 var fs = require("fs");
 
-var parse = require("csv-parse");
+var parse = require("csv-parse").parse;
 
 parse(fs.readFileSync(path.join(__dirname, "..","data","mishnah.csv")),function(err,output) {
   var mesechtot = output[0];

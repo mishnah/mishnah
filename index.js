@@ -3,7 +3,6 @@ var fs = require('fs');
 var _ = require('underscore');
 var moment = require('moment');
 var eng2heb = require('./lib/eng2heb');
-var request = require('request');
 
 // loading the data
 var json = JSON.parse(
@@ -244,38 +243,39 @@ exports.source = function (o, callback) {
   var masechet = hebrew.names[o.t];
   var perek = hebrew.values[o.p];
   var mishnah = hebrew.values[o.m];
-  var menukad = o.menukad;
 
   var encoded_page = encodeURI(
     'משנה_' + masechet + '_' + perek + '_' + mishnah
   );
   var url = 'https://www.sefaria.org/api/texts/' + encoded_page;
-  function getMishnah(cb) {
-    request(url, function (err, reponse, body) {
-      if (err) {
-        return cb(err);
-      }
-      var json = JSON.parse(body);
-      if (!json || !json.he || !json.he[o.m - 1]) {
-        return cb('Not Found');
-      }
-      var content = json.he[o.m - 1];
-      var complete = `
+  function getMishnah() {
+    return fetch(url)
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Not Found');
+        }
+        return response.json();
+      })
+      .then(function (json) {
+        if (!json || !json.he || !json.he[o.m - 1]) {
+          throw new Error('Not Found');
+        }
+        var content = json.he[o.m - 1];
+        return `
       <div style="direction: rtl;">${content}</div>
       <small><a href="https://www.mishnahyomit.com/learn/?t=${o.t}&p=${o.p}&m=${o.m}">Full Text and Commentary</a></small>
       `;
-      cb(null, complete);
-    });
+      });
   }
   if (callback) {
-    return getMishnah(callback);
-  }
-  return new Promise((resolve, reject) => {
-    getMishnah((err, content) => {
-      if (err) {
-        return reject(err);
+    return getMishnah().then(
+      function (content) {
+        callback(null, content);
+      },
+      function (err) {
+        callback(err);
       }
-      resolve(content);
-    });
-  });
+    );
+  }
+  return getMishnah();
 };
