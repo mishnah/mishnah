@@ -16,6 +16,7 @@ assert.strictEqual(calendar.weeks[0].note, 'נצבים');
 assert.strictEqual(calendar.weeks[1].note, 'וילך');
 assert.strictEqual(calendar.weeks[2].note, 'האזינו');
 assert.strictEqual(calendar.weeks[3].note, 'סוכות');
+assert.ok(calendar.weeks.some((week) => week.note === 'נצבים־וילך'));
 
 const dates = calendar.weeks.flatMap((week) => week.days.map((day) => moment(day.date)));
 assert.strictEqual(dates.length, 392);
