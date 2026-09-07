@@ -3,6 +3,10 @@
   "version": "1.4.5",
   "description": "Mishnah Study Library",
   "main": "index.js",
+  "scripts": {
+    "calendar": "node tools/buildCalendar",
+    "test": "node test/yearCalendar.js"
+  },
   "author": "David Bankier",
   "license": "MIT",
   "dependencies": {
@@ -14,7 +18,9 @@
     "url": "git://github.com/mishnah/mishnah.git"
   },
   "devDependencies": {
+    "@fontsource/montserrat": "^5.3.0",
     "csv-parse": "^6.2.1",
-    "hebcal": "^2.2.0"
+    "hebcal": "^2.2.0",
+    "pdfkit": "^0.20.2"
   }
 }

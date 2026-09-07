@@ -112,6 +112,23 @@ The mishnah object expects the following format:
 
 If a callback is not provided, a promise will be returned.
 
+## Printable yearly calendar
+
+Generate a branded, one-page PDF and its matching CSV for a Jewish year:
+
+```
+npm run calendar -- 5787
+```
+
+The calendar begins on the Sunday of the full week before Rosh Hashanah and
+ends on the Shabbat after Sukkot/Simchat Torah in the following Jewish year.
+Output is written to `data/calendar-5787.pdf` and `data/calendar-5787.csv`.
+
+Use `--format pdf` or `--format csv` to create just one format, `--output` to
+choose a destination, and `--israel` for the Israeli holiday and Torah-reading
+cycle. Run `npm run calendar -- --help` for all options. When no year is given,
+the current or upcoming Jewish year is selected automatically.
+
 ### Credits
 
 The original sheet with the breakdown of mishnayot per perek was taken from [here](https://docs.google.com/spreadsheets/d/11ITaH8qPFPIo1xvX13X0m7iCUfSgtLMIxP8A-Y39SuE/edit).
